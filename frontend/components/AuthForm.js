@@ -8,18 +8,19 @@ export function AuthForm(props) {
     login,
     register,
     authForm,
-    authInputChange,
+    inputChange,
     navigate,
     auth,
   } = props
 
   useEffect(() => {
-    if (auth.user) navigate('/')
-  }, [auth.user])
+    if (auth.is_admin) navigate('/admin')
+    else if (auth.is_user) navigate('/')
+  }, [auth.is_user])
 
   const onChange = evt => {
     const { name, value } = evt.target
-    authInputChange({ name, value })
+    inputChange({ name, value })
   }
 
   const onSubmit = evt => {
@@ -44,7 +45,7 @@ export function AuthForm(props) {
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <form id="authForm" onSubmit={onSubmit}>
       <input
         type="text"
         maxLength={200}
@@ -83,5 +84,5 @@ export default connect(st => ({
 }), {
   login: actions.login,
   register: actions.register,
-  authInputChange: actions.authInputChange,
+  inputChange: actions.inputChange,
 })(AuthForm)

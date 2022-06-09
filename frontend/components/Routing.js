@@ -19,32 +19,37 @@ export function Routing(props) {
     props.getAuthStatus()
   }, [location.pathname])
 
-  const onLogout = () => {
+  const onLogout = () => { // =============== 👉 [Code-Along 11.1] - step 1
     props.reset()
     props.setMessage({ main: 'Bye' })
-    window.localStorage.removeItem('token')
+    window.localStorage.removeItem('tk_bloomqz')
     navigate('/auth', { replace: true })
   }
 
-  const { user, admin } = props.auth
-
+  const { is_user, is_admin } = props.auth
+  const renderNav = !is_admin || location.pathname !== '/admin/quiz/edit'
   return (
     <>
       <Spinner />
       <Opacity>
         <Message />
-        {user && <button onClick={onLogout} id="logout">Logout</button>}
+        {is_user && <button onClick={onLogout} id="logout">Logout</button>}
         <nav>
-          <NavLink to="/">Test yourself!</NavLink>
-          {user && <NavLink to="/stats">Stats</NavLink>}
-          {admin && <NavLink to="/admin">Admin</NavLink>}
-          {!user && location.pathname !== '/auth' && <NavLink to="/auth">Sign in to see your stats</NavLink>}
+          {
+            renderNav &&
+            <>
+              <NavLink to="/">{is_admin ? "Selected Quiz" : "Test yourself!"}</NavLink>
+              {is_admin && <NavLink to="/admin">Quizzes</NavLink>}
+              {is_user && !is_admin && <NavLink to="/stats">Stats</NavLink>} {/* =============== 👉 [Code-Along 11.1] - step 2 */}
+              {!is_user && location.pathname !== '/auth' && <NavLink to="/auth">Sign in to save your progress</NavLink>}
+            </>
+          }
         </nav>
         <Routes>
           <Route path="/" element={<Quiz navigate={navigate} />} />
           <Route path="auth" element={<AuthForm navigate={navigate} />} />
           <Route path="admin/*" element={<Admin navigate={navigate} />} />
-          <Route path="stats" element={<Stats navigate={navigate} />} />
+          <Route path="stats" element={<Stats navigate={navigate} />} /> {/* =============== 👉 [Code-Along 11.1] - step 3.1 */}
         </Routes>
         <footer>Bloom Institute of Technology {new Date().getFullYear()}</footer>
       </Opacity>

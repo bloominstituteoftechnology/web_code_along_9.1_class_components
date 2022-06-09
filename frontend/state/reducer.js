@@ -2,7 +2,24 @@ import { combineReducers } from 'redux'
 import * as types from './action-types'
 import { initialQuestionForm } from '../../shared/utils'
 
-const initialAuth = { user: null, admin: null }
+const initialSearch = { searchText: '' } // =============== 👉 [Code-Along 10.1] - step 1.1
+function quizSearchForm(state = initialSearch, action) {
+  switch (action.type) {
+    case types.RESET:
+      return initialSearch
+    case types.INPUT_CHANGE: {
+      const { name, value } = action.payload
+      if (Object.keys(state).includes(name)) {
+        return { ...state, [name]: value }
+      }
+      return state
+    }
+    default:
+      return state
+  }
+}
+
+const initialAuth = { is_user: null, is_admin: null }
 function auth(state = initialAuth, action) {
   switch (action.type) {
     case types.RESET:
@@ -20,9 +37,15 @@ const initialAuthForm = {
 function authForm(state = initialAuthForm, action) {
   switch (action.type) {
     case types.RESET:
+    case types.AUTH_FORM_RESET:
       return initialAuthForm
-    case types.AUTH_FORM_INPUT_CHANGE:
-      return { ...state, [action.payload.name]: action.payload.value }
+    case types.INPUT_CHANGE: {
+      const { name, value } = action.payload
+      if (Object.keys(state).includes(name)) {
+        return { ...state, [name]: value }
+      }
+      return state
+    }
     default:
       return state
   }
@@ -46,14 +69,24 @@ function quizForm(state = initialQuestionForm(), action) {
       return action.payload
     case types.QUESTION_FORM_SET_EXISTING:
       return action.payload
-    case types.QUESTION_FORM_INPUT_CHANGE: {
-      return { ...state, [action.payload.name]: action.payload.value }
-    }
-    case types.QUESTION_FORM_OPTION_INPUT_CHANGE: {
-      const { optionKey, name, value } = action.payload
-      const optionToChange = state.options[optionKey]
-      const changed = { ...optionToChange, [name]: value }
-      return { ...state, options: { ...state.options, [optionKey]: changed } }
+    case types.INPUT_CHANGE: {
+      const { name, value } = action.payload
+      if (Object.keys(state).includes(name)) {
+        return { ...state, [name]: value }
+      }
+      const [optionName, optionKey] = name.split('-')
+      const options = state.options
+      if (optionKey && Object.keys(options).includes(optionKey)) {
+        const option = state.options[optionKey]
+        return {
+          ...state,
+          options: {
+            ...options,
+            [optionKey]: { ...option, [optionName]: value },
+          }
+        }
+      }
+      return state
     }
     case types.QUESTION_FORM_SET_CORRECT_OPTION: {
       const options = { ...state.options }
@@ -92,6 +125,8 @@ function quizForm(state = initialQuestionForm(), action) {
 const initialQuiz = {}
 function quiz(state = initialQuiz, action) {
   switch (action.type) {
+    case types.RESET:
+      return initialQuiz
     case types.SET_QUIZ:
       return { option_id: null, question: action.payload }
     case types.QUIZ_SET_SELECTED_OPTION:
@@ -124,13 +159,13 @@ function spinnerOn(state = false, action) {
   }
 }
 
-const initialStats = {}
+const initialStats = null // =============== 👉 [Code-Along 10.2] - step 1.1
 function stats(state = initialStats, action) {
   switch (action.type) {
     case types.RESET:
       return initialStats
     case types.SET_GENERAL_STATS:
-      return { ...state, general: action.payload }
+      return action.payload
     default:
       return state
   }
@@ -142,7 +177,8 @@ export default combineReducers({
   quiz,
   infoMessage,
   auth,
-  stats,
   quizList,
   spinnerOn,
+  stats, // =============== 👉 [Code-Along 10.2] - step 1.2
+  quizSearchForm, // =============== 👉 [Code-Along 10.1] - step 1.2
 })

@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled, { keyframes } from 'styled-components'
-import useProfile from '../hooks/profile'
 
 const opacity = keyframes`
   0% { opacity: 0; }
@@ -22,13 +21,39 @@ const StyledMessage = styled.div`
   animation: ${opacity} 1s forwards;
 `
 
+function useHeading(headingStr) { // =============== 👉 [Code-Along 9.2] - step 1
+  const lowCase = headingStr
+  const upperCase = headingStr.toUpperCase()
+
+  const maxIndex = headingStr.length - 1 // =============== 👉 [Code-Along 9.2] - step 2
+  const [index, setIndex] = useState(-1)
+
+  const changeHeadingArr = () => { // =============== 👉 [Code-Along 9.2] - step 3
+    const nextIndex = index === maxIndex ? 0 : index + 1
+    setIndex(nextIndex)
+  }
+
+  const headingArr = lowCase.split('').map((char, idx) => {
+    return index === idx ? upperCase[idx] : lowCase[idx]
+  })
+
+  return [headingArr, changeHeadingArr]
+}
+
 export function Message({ infoMessage }) {
   const { main, code, time } = infoMessage
-  const profile = useProfile()
-
+  const [heading, clickHandler] = useHeading('bloomquiz')
   return (
-    <StyledMessage key={time} code={code} id="message">
-      <h1>BloomQuiz</h1> {main}{!!profile.username && `, ${profile.username}`}
+    <StyledMessage key={time} code={code} id="message" onClick={clickHandler}>
+      <h1>
+        {
+          heading.map((char, idx) => {
+            const opacity = char === 'BLOOMQUIZ'[idx] ? 1 : 0.4 // =============== 👉 [Code-Along 9.2] - step 4
+            return <span style={{ opacity }} key={idx}>{char}</span>
+          })
+        }
+      </h1>
+      <span>{main}</span>
     </StyledMessage>
   )
 }

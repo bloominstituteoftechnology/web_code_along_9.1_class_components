@@ -210,7 +210,17 @@ router.put('/:question_id', async (req, res, next) => {
     }
 
     const question = await Question.editById(req.params.question_id, validatedQuestion)
-    res.status(201).json(question)
+    res.status(200).json(question)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/text', async (req, res, next) => {
+  try {
+    const { text } = req.query
+    const quizzes = await Question.getByText({ text })
+    res.json(quizzes)
   } catch (err) {
     next(err)
   }

@@ -18,26 +18,35 @@ export function Quiz(props) {
     if (!question) nextQuiz()
   }, [])
 
-  const onClick = () => {
-    answerQuiz({ question_id: question.question_id, option_id })
+  const onAnswer = () => {
+    const { question_id } = question
+    const getNext = !auth.is_admin
+    answerQuiz({ question_id, option_id, getNext })
   }
 
   const onEdit = question => () => {
-    if (auth.admin) {
+    if (auth.is_admin) {
       questionFormSetExisting(question)
       navigate('/admin/quiz/edit')
     }
   }
 
+  const onCancel = () => {
+    navigate('/admin')
+  }
+
   return (
-    <div>
+    <div id="quizContainer">
       {
         question ? (
           <>
-            <div id="quizAnswers">
+            {auth.is_admin && <h2>{question.question_title}</h2>}
+            <div className="quiz">
               {
-                auth.admin &&
-                <button className="edit" onClick={onEdit(question)}>🔧</button>
+                auth.is_admin &&
+                <div className="edit">
+                  <button onClick={onEdit(question)}>🔧</button>
+                </div>
               }
               <Md className="question text md">
                 {question.question_text}
@@ -58,9 +67,10 @@ export function Quiz(props) {
               }
             </div>
             <div className="button-group">
-              <button className="jumbo-button" onClick={onClick} disabled={!option_id}>
+              <button className="jumbo-button" onClick={onAnswer} disabled={!option_id}>
                 Submit answer
               </button>
+              {auth.is_admin && <button onClick={onCancel}>Back to list</button>}
             </div>
           </>
         ) : 'Loading next quiz...'

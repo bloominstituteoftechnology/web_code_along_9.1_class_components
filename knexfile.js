@@ -1,19 +1,19 @@
-const development = {
+const common = {
   client: 'sqlite3',
-  connection: { filename: './backend/data/dev.db3' },
+  useNullAsDefault: true,
   migrations: { directory: './backend/data/migrations' },
   seeds: { directory: './backend/data/seeds' },
   pool: { afterCreate: (conn, done) => conn.run('PRAGMA foreign_keys = ON', done) },
-  useNullAsDefault: true,
 }
 
-const production = {
-  client: 'sqlite3',
-  connection: { filename: './backend/data/prod.db3' },
-  migrations: { directory: './backend/data/migrations' },
-  seeds: { directory: './backend/data/seeds' },
-  pool: { afterCreate: (conn, done) => conn.run('PRAGMA foreign_keys = ON', done) },
-  useNullAsDefault: true,
+const development = {
+  ...common,
+  connection: { filename: './backend/data/dev.db3' },
+}
+
+const testing = {
+  ...common,
+  connection: { filename: './backend/data/test.db3' },
 }
 
 const onUpdateTrigger = table => `
@@ -28,6 +28,6 @@ const onUpdateTrigger = table => `
 
 module.exports = {
   development,
-  production,
+  testing,
   onUpdateTrigger,
 }

@@ -1,8 +1,13 @@
 @use 'reset.scss';
 
 @font-face {
-  font-family: 'Titillium Web';
+  font-family: 'Titillium';
   src: url('../fonts/TitilliumWeb-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'TitilliumBold';
+  src: url('../fonts/TitilliumWeb-Bold.ttf');
 }
 
 $app-background-color: white;
@@ -18,7 +23,11 @@ $form-border-color: rgb(238, 238, 238);
 
 html {
   min-height: 100vh;
-  font-family: 'Titillium Web', sans-serif;
+  font-family: 'Titillium', sans-serif;
+
+  strong {
+    font-family: 'TitilliumBold', sans-serif;
+  }
 }
 
 body {
@@ -89,11 +98,11 @@ h2 {
     position: absolute;
     top: -10px;
     left: 0;
-    opacity: 0.2
   }
 }
 
-form {
+form#authForm,
+form#quizForm {
   min-width: 450px;
   padding: 0.55rem;
   background-color: $form-background-color;
@@ -102,10 +111,6 @@ form {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
-  button {
-    width: 100%
-  }
 
   a {
     margin-top: 1.5rem;
@@ -116,6 +121,12 @@ form {
       cursor: pointer;
     }
   }
+}
+
+form#searchForm {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 
 button {
@@ -147,6 +158,7 @@ button.jumbo-button {
   color: $app-background-color;
   width: 100%;
   height: 6rem;
+  transition: all 0.1s ease-in-out;
 
   &:disabled {
     cursor: not-allowed;
@@ -157,12 +169,12 @@ button.jumbo-button {
 }
 
 .button-group {
-  margin: 1rem 0 0 0.2rem;
   display: flex;
   width: 100%;
 
   button:nth-of-type(1) {
-    flex: 4;
+    flex: 3;
+    margin-right: -1px;
   }
 
   button:nth-of-type(2) {
@@ -174,6 +186,24 @@ button.jumbo-button {
   opacity: 0.8;
   margin: 0 0 0 0.5rem;
   display: flex;
+
+  button:nth-of-type(1) {
+    margin-right: -1px;
+  }
+}
+
+.search-bar {
+  display: flex;
+  height: 2.4rem;
+
+  input {
+    border-radius: 0;
+  }
+
+  button:nth-of-type(1) {
+    margin-right: -1px;
+    margin-left: -1px;
+  }
 }
 
 input,
@@ -263,6 +293,7 @@ footer {
   background-color: $form-background-color;
   border: 1px solid $form-border-color;
   margin-bottom: 0.9rem;
+  transition: all 0.1s ease-in-out;
 
   button {
     &.wide {
@@ -280,6 +311,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 
     &.selected {
       background-color: $app-background-color;
@@ -288,15 +320,25 @@ footer {
   }
 }
 
-#quizAnswers {
-  min-width: 450px;
-  position: relative;
+#quizContainer {
+  padding: 0 0.5rem 0 0.5rem;
 
-  button.edit {
-    opacity: 0.8;
-    position: absolute;
-    top: 0;
-    right: 0;
+  h2 {
+    margin-bottom: 2rem;
+  }
+
+  .quiz {
+    min-width: 450px;
+    position: relative;
+
+    div.edit {
+      display: flex;
+      flex-direction: column;
+      opacity: 0.7;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
   }
 }
 
@@ -309,6 +351,7 @@ footer {
 
 .option {
   border: 1px solid $input-border-color;
+  transition: all 0.15s ease-in-out;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   width: 100%;
@@ -318,6 +361,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    cursor: pointer;
   }
 
   .option-inputs {
@@ -334,4 +378,9 @@ code.language-js {
   display: block;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+#quizList {
+  min-width: 450px;
+  max-width: 620px;
 }
