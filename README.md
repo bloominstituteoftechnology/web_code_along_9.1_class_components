@@ -1,4 +1,4 @@
-# Class Components
+# Code-Along 9.1 - Class Components
 
 ## Requirements
 
